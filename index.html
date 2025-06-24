@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>千帆标签 - AIGC提示词生成器</title>
+  <link rel="icon" type="image/svg+xml" href="icon/千帆标签.svg" />
+  <meta name="description" content="千帆标签是一个为AIGC爱好者和设计师打造的咒语(Prompt)生成器，提供海量、结构化的中英文Tag标签，助您轻松创作惊艳的AI艺术作品。">
+  <meta name="keywords" content="AIGC, Prompt, 咒语, 提示词, AI绘画, Stable Diffusion, Midjourney, Tag">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <a href="./" class="logo-link">
+      <img src="icon/千帆标签.svg" alt="千帆标签 Logo" class="logo-img">
+      <h1>千帆标签</h1>
+    </a>
+    <nav id="mainNav"></nav>
+    <ul id="productsNav" class="nav-group-container">
+      <li class="nav-group">
+        <button class="group-btn"><span>旗下产品</span></button>
+        <ul class="category-list product-list">
+          <li><a href="https://anshengsen.github.io/QianfanTag/" target="_blank" rel="noopener noreferrer" class="category-btn active">千帆标签</a></li>
+          <li><a href="https://anshengsen.github.io/QianfanCreative/" target="_blank" rel="noopener noreferrer" class="category-btn">千帆创意</a></li>
+          <li><a href="https://anshengsen.github.io/QianfanWallpaper/" target="_blank" rel="noopener noreferrer" class="category-btn">千帆壁纸</a></li>
+          <li><a href="https://anshengsen.github.io/QianfanColor/" target="_blank" rel="noopener noreferrer" class="category-btn">千帆色卡</a></li>
+          <li><a href="https://anshengsen.github.io/QianfanPicker/" target="_blank" rel="noopener noreferrer" class="category-btn">千帆拾色</a></li>
+          <li><a href="https://anshengsen.github.io/QianfanNav/" target="_blank" rel="noopener noreferrer" class="category-btn">千帆导航</a></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="search-container">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" id="searchInput" placeholder="搜索标签, 如 '女孩' 或 'girl'">
+    </div>
+    <button id="themeToggle" title="切换主题">
+      <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2"></path>
+        <path d="M12 20v2"></path>
+        <path d="m4.93 4.93 1.41 1.41"></path>
+        <path d="m17.66 17.66 1.41 1.41"></path>
+        <path d="M2 12h2"></path>
+        <path d="M20 12h2"></path>
+        <path d="m6.34 17.66-1.41 1.41"></path>
+        <path d="m19.07 4.93-1.41 1.41"></path>
+      </svg>
+      <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+  </header>
+
+  <main class="prompt-generator-layout">
+    <div class="tag-selector-container" id="tag-selector-container">
+    </div>
+
+    <div class="prompt-workspace-container">
+      <div class="prompt-workspace">
+        <div class="workspace-header">
+          <h3>正向提示词</h3>
+          <div class="workspace-controls">
+            <div class="lang-toggle">
+              <input type="checkbox" id="langSwitch" class="lang-switch-checkbox">
+              <label for="langSwitch" class="lang-switch-label">
+                <span class="lang-switch-inner"></span>
+                <span class="lang-switch-switch"></span>
+              </label>
+            </div>
+            <button id="translatePositiveBtn">翻译</button>
+            <button id="copyBtn">复制</button>
+            <button id="clearBtn">清空</button>
+          </div>
+        </div>
+        <textarea id="promptTextarea" placeholder="点击左侧标签添加，或在此处输入中文后点击翻译..."></textarea>
+        
+        <div class="workspace-header">
+            <h3>反向提示词</h3>
+            <div class="workspace-controls">
+                <button id="translateNegativeBtn">翻译</button>
+                <button id="copyNegativeBtn">复制</button>
+            </div>
+        </div>
+        <textarea id="negativePromptTextarea">nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry</textarea>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="donation-section">
+        <span class="donation-title">如果本站能给您带来帮助，欢迎请我们喝杯咖啡~</span>
+        <div class="donation-item wechat-donate">
+          <img src="icon/微信.png" alt="微信打赏" class="donation-icon"><div class="wechat-qr-popup"><img src="icon/微信打赏.png" alt="微信支付二维码"></div>
+        </div>
+        <div class="donation-item">
+          <a href="https://afdian.com/a/DreamLab" target="_blank" rel="noopener noreferrer"><img src="icon/爱发电.png" alt="爱发电" class="donation-icon"></a>
+        </div>
+        <div class="donation-item">
+          <a href="https://paypal.me/AnShengsen" target="_blank" rel="noopener noreferrer"><img src="icon/paypal.svg" alt="PayPal" class="donation-icon"></a>
+        </div>
+      </div>
+      <p class="copyright">Copyright © 2025-现在 千帆标签 丨 Ai数字绘画馆 x DreamLab联合运营</p>
+      <p class="contact">内容反馈：<a href="mailto:1938606725@qq.com">1938606725@qq.com</a> ｜ 技术支持：<a href="mailto:403438119@qq.com">403438119@qq.com</a> ｜ 版权投诉：<a href="mailto:ayao989898@163.com">ayao989898@163.com</a></p>
+    </div>
+  </footer>
+
+  <div id="floating-sidebar">
+    <button id="closeSidebarBtn" class="sidebar-close-btn" title="关闭">&times;</button>
+    <ul class="sidebar-list">
+        <li class="sidebar-item"><a href="javascript:void(0);" class="sidebar-link"><img src="icon/微信.png" alt="微信" class="sidebar-icon"></a><div class="qr-popup"><img src="icon/微信关注.png" alt="微信二维码"><span>微信</span></div></li>
+        <li class="sidebar-item"><a href="javascript:void(0);" class="sidebar-link"><img src="icon/抖音.png" alt="抖音" class="sidebar-icon"></a><div class="qr-popup"><img src="icon/抖音关注.png" alt="抖音二维码"><span>抖音</span></div></li>
+        <li class="sidebar-item"><a href="https://www.xiaohongshu.com/user/profile/6123bdb4000000000101c43b" target="_blank" rel="noopener noreferrer" class="sidebar-link"><img src="icon/小红书.png" alt="小红书" class="sidebar-icon"></a><div class="tooltip"><span>小红书</span></div></li>
+        <li class="sidebar-item"><a href="https://afdian.com/a/DreamLab" target="_blank" rel="noopener noreferrer" class="sidebar-link"><img src="icon/爱发电.png" alt="爱发电" class="sidebar-icon"></a><div class="tooltip"><span>爱发电</span></div></li>
+        <li class="sidebar-item"><a href="https://tawk.to/chat/670231c0256fb1049b1dd270/1i9ge1cpl" target="_blank" rel="noopener noreferrer" class="sidebar-link"><img src="icon/tawk.png" alt="联系客服" class="sidebar-icon"></a><div class="tooltip"><span>联系客服</span></div></li>
+    </ul>
+  </div>
+  
+  <script>
+    const tagData = [];
+  </script>
+  <script src="tags_parameter.js"></script>
+  <script src="tags_character.js"></script>
+  <script src="tags_clothing.js"></script>
+  <script src="tags_hanfu.js"></script>
+  <script src="tags_automobile.js"></script>
+  <script src="tags_gourmet_food.js"></script>
+  <script src="tags_photography.js"></script>
+  <script src="tags_animal.js"></script>
+  <script src="tags_plants.js"></script>
+  <script src="tags_general.js"></script>
+  <script src="tags_interior_design.js"></script>
+  <script src="tags_industrial_art.js"></script>
+  <script src="tags_game_design.js"></script>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sidebar = document.getElementById('floating-sidebar');
+      const closeBtn = document.getElementById('closeSidebarBtn');
+      if (sessionStorage.getItem('sidebarClosed') === 'true') {
+        sidebar.classList.add('is-hidden');
+      }
+      if (sidebar && closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          sidebar.classList.add('is-hidden');
+          sessionStorage.setItem('sidebarClosed', 'true');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
