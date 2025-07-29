@@ -11,6 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const translateNegativeBtn = document.getElementById('translateNegativeBtn');
     const copyNegativeBtn = document.getElementById('copyNegativeBtn');
 
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mobileNavContainer = document.getElementById('mobileNavContainer');
+    const mobileNavCloseBtn = document.getElementById('mobileNavCloseBtn');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const mobileNavContent = document.getElementById('mobileNavContent');
+
     let currentGroupIndex = 0;
     let selectedTags = new Map();
 
@@ -67,6 +73,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!navContainer || !navInner) return;
 
         const checkOverflow = () => {
+            if (window.innerWidth <= 1024) {
+                 navContainer.onmouseenter = null;
+                 navContainer.onmouseleave = null;
+                 return;
+            }
             const isOverflowing = navInner.scrollWidth > navContainer.clientWidth;
             if (isOverflowing) {
                 navContainer.onmouseenter = () => {
@@ -85,6 +96,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
         checkOverflow();
         window.addEventListener('resize', checkOverflow);
+    }
+    
+    function renderMobileNavigation() {
+        mobileNavContent.innerHTML = '';
+        const navList = document.createElement('ul');
+
+        tagData.forEach((group, groupIndex) => {
+            const groupLi = document.createElement('li');
+            const groupButton = document.createElement('button');
+            groupButton.className = 'mobile-nav-group-btn';
+            groupButton.textContent = group.group.split('(')[0].trim();
+            groupButton.onclick = () => {
+                currentGroupIndex = groupIndex;
+                searchInput.value = '';
+                renderGroupContent();
+                updateActiveNav();
+                closeMobileNav();
+            };
+            groupLi.appendChild(groupButton);
+            navList.appendChild(groupLi);
+        });
+
+        const productsNavSource = document.getElementById('productsNav');
+        if (productsNavSource) {
+            const mobileProductsNav = productsNavSource.cloneNode(true);
+            mobileProductsNav.removeAttribute('id');
+            mobileProductsNav.querySelectorAll('.nav-group').forEach(group => {
+                const groupButton = group.querySelector('.group-btn');
+                const categoryList = group.querySelector('.category-list');
+                if (groupButton && categoryList) {
+                    const mobileGroupLi = document.createElement('li');
+                    const mobileGroupBtn = document.createElement('button');
+                    mobileGroupBtn.className = 'mobile-nav-group-btn is-expandable';
+                    mobileGroupBtn.innerHTML = groupButton.innerHTML;
+                    mobileGroupLi.appendChild(mobileGroupBtn);
+                    const mobileCategoryList = document.createElement('ul');
+                    mobileCategoryList.className = 'mobile-category-list';
+                    categoryList.querySelectorAll('li a').forEach(link => {
+                        const mobileLinkLi = document.createElement('li');
+                        const mobileLink = link.cloneNode(true);
+                        mobileLink.className = 'mobile-category-btn';
+                        mobileLinkLi.appendChild(mobileLink);
+                        mobileCategoryList.appendChild(mobileLinkLi);
+                    });
+                    mobileGroupLi.appendChild(mobileCategoryList);
+                    mobileGroupBtn.onclick = () => {
+                        mobileGroupBtn.classList.toggle('expanded');
+                        mobileCategoryList.classList.toggle('expanded');
+                    };
+                    navList.appendChild(mobileGroupLi);
+                }
+            });
+        }
+        mobileNavContent.appendChild(navList);
     }
 
     function renderGroupContent() {
@@ -230,6 +295,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll("#mainNav .group-btn").forEach((btn, index) => {
             btn.classList.toggle("active", index === currentGroupIndex);
         });
+        document.querySelectorAll("#mobileNavContent .mobile-nav-group-btn").forEach((btn, index) => {
+             if (!btn.classList.contains('is-expandable')) {
+                btn.classList.toggle("active", index === currentGroupIndex);
+             }
+        });
     }
     
     async function handleTranslation(textarea, button) {
@@ -268,6 +338,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         textarea.value = (cleanedText + parameters).trim();
     }
+    
+    function openMobileNav() {
+        mobileNavContainer.classList.add('open');
+        mobileNavOverlay.classList.add('open');
+        document.body.classList.add('mobile-nav-active');
+    }
+
+    function closeMobileNav() {
+        mobileNavContainer.classList.remove('open');
+        mobileNavOverlay.classList.remove('open');
+        document.body.classList.remove('mobile-nav-active');
+    }
 
     function setupEventListeners() {
         langSwitch.addEventListener('change', updatePromptTextarea);
@@ -283,6 +365,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
         searchInput.addEventListener('input', performSearch);
+        
+        mobileNavToggle.addEventListener('click', openMobileNav);
+        mobileNavCloseBtn.addEventListener('click', closeMobileNav);
+        mobileNavOverlay.addEventListener('click', closeMobileNav);
     }
     
     function initTheme() {
@@ -302,6 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function init() {
         renderNavigation();
+        renderMobileNavigation();
         renderGroupContent();
         setupEventListeners();
         initTheme();
